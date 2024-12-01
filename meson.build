@@ -9,3 +9,4 @@ foreach day : days
 endforeach
 
 test('vector tests', executable('vector_tests', 'src/vector.c', 'src/vector_test.c'))
+test('hashmap tests', executable('hashmap_tests', 'src/hashmap.c', 'src/hashmap_test.c'))
