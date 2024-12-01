@@ -8,4 +8,4 @@ foreach day : days
 	executable(day)
 endforeach
 
-test('vector tests', executable('vector', 'src/vector.c'))
+test('vector tests', executable('vector_tests', 'src/vector.c', 'src/vector_test.c'))
