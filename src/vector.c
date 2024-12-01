@@ -4,7 +4,7 @@
 #include "stdlib.h"
 #include "string.h"
 
-#define DEFAULT_VEC_CAPACITY 64
+#define DEFAULT_VEC_CAPACITY 1
 
 typedef void(elem_drop_fun)(void *);
 
@@ -21,8 +21,8 @@ struct vector {
 
 // double the capacity of the vector
 void vector_double_allocation(struct vector *v) {
-  size_t new_capacity = v->capacity * v->stride * 2;
-  void *new_pointer = realloc((void *)v->buffer, new_capacity);
+  size_t new_capacity = v->capacity * 2;
+  void *new_pointer = realloc((void *)v->buffer, new_capacity * v->stride);
   assert(new_pointer != NULL);
   v->buffer = (char *)new_pointer;
   v->capacity = new_capacity;
@@ -60,7 +60,7 @@ void vector_free(struct vector *v) {
   free(v->buffer);
 }
 
-void *vector_item(struct vector *v, size_t index) {
+void *vector_item(struct vector const *v, size_t index) {
   if (index >= v->length) {
     return NULL;
   } else {

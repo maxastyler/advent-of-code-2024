@@ -1,6 +1,6 @@
 project('aoc2024', 'c')
 
-days = [['day_01', 'src/day_01.c']]
+days = [['day_01', 'src/day_01/day_01.c', 'src/vector.c']]
 
 thread_dep = dependency('threads')
 

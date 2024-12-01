@@ -14,8 +14,6 @@ struct vector {
   elem_drop_fun *dropper;
 };
 
-
-
 // allocate a new vector
 struct vector vector_new(size_t stride, elem_drop_fun *dropper);
 
@@ -26,7 +24,7 @@ void vector_free(struct vector *v);
 void vector_free_without_drop(struct vector *v);
 
 // get a pointer to the given index
-void *vector_item(struct vector *v, size_t index);
+void *vector_item(struct vector const *v, size_t index);
 
 // push the given item into the vector
 void vector_push(struct vector *v, void *item);
