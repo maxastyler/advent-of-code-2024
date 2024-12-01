@@ -5,7 +5,7 @@ bool int_eq(const void *k1, const void *k2) {
   return *(size_t *)k1 == *(size_t *)k2;
 }
 
-int main(void) {
+int test_1() {
   struct hashmap h =
       hashmap_new_default(sizeof(size_t), sizeof(size_t), int_eq);
   size_t x = 0;
@@ -29,9 +29,30 @@ int main(void) {
   assert(h.n_occupations == 2);
   assert(hashmap_get(&h, &y) == NULL);
   for (size_t i = 0; i < 100; i++) {
+
+    hashmap_insert(&h, &i, &i);
     hashmap_insert(&h, &i, &i);
   }
-  /* printf("%lu\n", h.length); */
-  /* assert(h.length == 100); */
+  return 0;
+}
+
+int test_2() {
+  struct hashmap h =
+      hashmap_new_default(sizeof(size_t), sizeof(size_t), int_eq);
+
+  for (size_t i = 0; i < 200; i++) {
+    hashmap_insert(&h, &i, &i);
+  }
+  assert(h.length == 200);
+  return 0;
+}
+
+int main(void) {
+  /* if (test_1() != 0) { */
+  /*   return 1; */
+  /* } */
+  if (test_2() != 0) {
+    return 1;
+  }
   return 0;
 }

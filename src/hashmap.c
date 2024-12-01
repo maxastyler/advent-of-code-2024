@@ -158,13 +158,16 @@ bool hashmap_keys_equal(struct hashmap *h, void *key, size_t index) {
   return h->key_eq(key, h->keys + (index * h->key_stride));
 }
 
-// find the first index that matches the given key, using linear stepping
+// find the first index that matches or can hold the given key, using linear
+// stepping
 size_t hashmap_find_index(struct hashmap *h, void *key) {
   struct hashmap_key_bytes hkb = h->to_bytes(key, h->key_stride);
   size_t base_index = h->hasher(hkb.data, hkb.length) % h->capacity;
   size_t index = base_index;
+
   do {
     enum hashmap_slot_occupancy occ = h->occupancies[index];
+    printf("index: %lu, base_index: %lu, occ: %u\n", index, base_index, occ);
     if (occ == hashmap_filled) {
       if (hashmap_keys_equal(h, key, index)) {
         return index;
@@ -176,13 +179,16 @@ size_t hashmap_find_index(struct hashmap *h, void *key) {
     if (index >= h->capacity) {
       index = 0;
     }
+
   } while (index != base_index);
+
   assert(index != base_index);
   return index;
 }
 
 void hashmap_check_occupancy(struct hashmap *h) {
-  if (((double)h->n_occupations / (double)h->capacity) > OCCUPANCY_THRESHOLD) {
+  double occ_fraction = ((double)h->n_occupations / (double)h->capacity);
+  if (occ_fraction > OCCUPANCY_THRESHOLD) {
     hashmap_double_capacity(h);
   }
 }
@@ -191,7 +197,9 @@ void hashmap_check_occupancy(struct hashmap *h) {
 // key/value if there was one
 void hashmap_insert(struct hashmap *h, void *key, void *value) {
   hashmap_check_occupancy(h);
+
   size_t index = hashmap_find_index(h, key);
+  printf("index: %lu\n", index);
   if (h->occupancies[index] == hashmap_filled) {
     // need to drop the previous key and value
     hashmap_drop_index(h, index);
