@@ -8,7 +8,15 @@
       let pkgs = import nixpkgs { inherit system; };
       in {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [ pkg-config meson ninja gcc clang-tools valgrind ];
+          packages = with pkgs; [
+            pkg-config
+            meson
+            ninja
+            gcc
+            clang-tools
+            valgrind
+            gdb
+          ];
         };
       });
 }

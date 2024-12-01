@@ -133,6 +133,9 @@ void hashmap_double_capacity(struct hashmap *h) {
   enum hashmap_slot_occupancy *new_occupancies =
       malloc(new_capacity * sizeof(enum hashmap_slot_occupancy));
   assert(new_occupancies != NULL);
+  for (size_t i = 0; i < new_capacity; i++) {
+    new_occupancies[i] = hashmap_empty;
+  }
   char *new_keys = malloc(new_capacity * h->key_stride);
   assert(new_keys != NULL);
   char *new_values = malloc(new_capacity * h->value_stride);
@@ -167,7 +170,6 @@ size_t hashmap_find_index(struct hashmap *h, void *key) {
 
   do {
     enum hashmap_slot_occupancy occ = h->occupancies[index];
-    printf("index: %lu, base_index: %lu, occ: %u\n", index, base_index, occ);
     if (occ == hashmap_filled) {
       if (hashmap_keys_equal(h, key, index)) {
         return index;
@@ -199,7 +201,6 @@ void hashmap_insert(struct hashmap *h, void *key, void *value) {
   hashmap_check_occupancy(h);
 
   size_t index = hashmap_find_index(h, key);
-  printf("index: %lu\n", index);
   if (h->occupancies[index] == hashmap_filled) {
     // need to drop the previous key and value
     hashmap_drop_index(h, index);

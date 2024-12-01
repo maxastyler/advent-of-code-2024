@@ -43,14 +43,19 @@ int test_2() {
   for (size_t i = 0; i < 200; i++) {
     hashmap_insert(&h, &i, &i);
   }
+  size_t x = 100;
   assert(h.length == 200);
+  assert(hashmap_remove(&h, &x));
+  assert(!hashmap_remove(&h, &x));
+  assert(h.length == 199);
+
   return 0;
 }
 
 int main(void) {
-  /* if (test_1() != 0) { */
-  /*   return 1; */
-  /* } */
+  if (test_1() != 0) {
+    return 1;
+  }
   if (test_2() != 0) {
     return 1;
   }
