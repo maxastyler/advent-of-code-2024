@@ -19,6 +19,8 @@ uint64_t part_1(const char *input) {
     uint64_t n2 = strtol(reg_iter_string_for_match(&r, 2), NULL, 10);
     total += n1 * n2;
   }
+
+  reg_iter_free(&r);
   return total;
 }
 
@@ -40,7 +42,7 @@ uint64_t part_2(const char *input) {
       total += n1 * n2;
     }
   }
-
+  reg_iter_free(&r);
   return total;
 }
 
