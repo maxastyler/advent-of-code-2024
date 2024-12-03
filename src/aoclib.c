@@ -4,6 +4,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "regex.h"
 
 const char *read_file(const char *fname) {
   FILE *f = fopen(fname, "r");
@@ -74,4 +75,57 @@ void spliterator_free(struct spliterator *s) {
   s->buffer = NULL;
   s->position = NULL;
   s->finished = true;
+}
+
+// struct that iterates over multiple matches in a string
+struct reg_iter {
+  regex_t compiled;
+  regmatch_t *matches;
+  uint64_t n_matches;
+  const char *previous_position;
+  const char *current_position;
+};
+
+// n_matches is the number of expressions expected to match the pattern (so, 1 +
+// n_sub_expression)
+struct reg_iter reg_iter_new(const char *pattern, const char *to_match,
+                             uint64_t n_matches) {
+  regmatch_t *matches = malloc(n_matches * sizeof(regmatch_t));
+  assert(matches != NULL);
+  struct reg_iter r = {
+      .matches = matches,
+      .n_matches = n_matches,
+      .current_position = to_match,
+      .previous_position = to_match,
+  };
+  assert(regcomp(&r.compiled, pattern, REG_EXTENDED) == 0);
+  return r;
+}
+
+/*returns 0 on success (and the new matches will be placed into r.matches)
+  or a posix regex error  on error (no more matches, regex error...)*/
+int32_t reg_iter_next_match(struct reg_iter *r) {
+  int32_t ret_val =
+      regexec(&r->compiled, r->current_position, r->n_matches, r->matches, 0);
+  if (ret_val == 0) {
+    // match succeeded, increment the current position to end of match
+    r->previous_position = r->current_position;
+    r->current_position += r->matches[0].rm_eo;
+  }
+  return ret_val;
+}
+
+const char *reg_iter_string_for_match(struct reg_iter *r,
+                                      uint64_t match_index) {
+  if ((match_index >= r->n_matches) ||
+      (r->current_position == r->previous_position)) {
+    return NULL;
+  } else {
+    return r->previous_position + r->matches[match_index].rm_so;
+  }
+}
+
+void reg_iter_free(struct reg_iter *r) {
+  regfree(&r->compiled);
+  free(r->matches);
 }
