@@ -63,7 +63,7 @@ free_splits:
 }
 
 bool line_is_good_p2(const char *line) {
-  for (size_t i = 0; i < 1000; i++) {
+  for (size_t i = 0; i < 10; i++) {
     if (line_is_good(line, i)) {
       return true;
     }
