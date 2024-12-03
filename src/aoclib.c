@@ -1,10 +1,10 @@
 #include "assert.h"
+#include "regex.h"
 #include "stdbool.h"
 #include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-#include "regex.h"
 
 const char *read_file(const char *fname) {
   FILE *f = fopen(fname, "r");
@@ -96,7 +96,7 @@ struct reg_iter reg_iter_new(const char *pattern, const char *to_match,
       .matches = matches,
       .n_matches = n_matches,
       .current_position = to_match,
-      .previous_position = to_match,
+      .previous_position = NULL,
   };
   assert(regcomp(&r.compiled, pattern, REG_EXTENDED) == 0);
   return r;
@@ -117,8 +117,7 @@ int32_t reg_iter_next_match(struct reg_iter *r) {
 
 const char *reg_iter_string_for_match(struct reg_iter *r,
                                       uint64_t match_index) {
-  if ((match_index >= r->n_matches) ||
-      (r->current_position == r->previous_position)) {
+  if ((match_index >= r->n_matches) || (r->previous_position == NULL)) {
     return NULL;
   } else {
     return r->previous_position + r->matches[match_index].rm_so;
