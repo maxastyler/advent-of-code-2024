@@ -46,9 +46,14 @@ uint64_t part_2(const char *input) {
   return total;
 }
 
-int main(void) {
+void run() {
   const char *input = read_file("src/day_03/input");
   printf("Part 1: %lu\n", part_1(input));
   printf("Part 2: %lu\n", part_2(input));
+  free(input);
+}
+
+int main(void) {
+  TIME_FUNCTION_EXECUTION(run, 100);
   return 0;
 }

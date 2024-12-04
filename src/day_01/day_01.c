@@ -1,3 +1,4 @@
+#include "../aoclib.h"
 #include "../hashmap.h"
 #include "../vector.h"
 #include "assert.h"
@@ -27,7 +28,7 @@ bool value_key(const void *p, const void *q) {
   return *(long *)p == *(long *)q;
 }
 
-void read_file(const char *fname, struct vector *col1, struct vector *col2) {
+void read_file_d1(const char *fname, struct vector *col1, struct vector *col2) {
 
   regex_t reg;
   assert(regcomp(&reg, "([[:digit:]]+)[[:blank:]]+([[:digit:]]+)",
@@ -103,17 +104,20 @@ long part_2(struct vector const *col1, struct vector const *col2) {
   return total;
 }
 
-int main(void) {
+void run() {
   struct vector col1 = vector_new(sizeof(long), NULL);
   struct vector col2 = vector_new(sizeof(long), NULL);
 
-  read_file("src/day_01/input", &col1, &col2);
+  read_file_d1("src/day_01/input", &col1, &col2);
 
   qsort(col1.buffer, col1.length, col1.stride, compare_ints);
   qsort(col2.buffer, col2.length, col2.stride, compare_ints);
 
   printf("Part 1: %lu\n", part_1(&col1, &col2));
   printf("Part 2: %lu\n", part_2(&col1, &col2));
+}
 
+int main(void) {
+  TIME_FUNCTION_EXECUTION(run, 100);
   return 0;
 }
