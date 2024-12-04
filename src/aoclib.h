@@ -3,6 +3,21 @@
 #include "regex.h"
 #include "stdbool.h"
 #include "stdint.h"
+#include "time.h"
+
+#define TIME_FUNCTION_EXECUTION(function, n_repeats)                           \
+  do {                                                                         \
+    uint64_t time_function_total_time_taken = 0;                               \
+    for (uint64_t n = 0; n < n_repeats; n++) {                                 \
+      clock_t time_function_t = clock();                                       \
+      function();                                                              \
+      time_function_total_time_taken += (clock() - time_function_t);           \
+    }                                                                          \
+    double time_function_time_taken =                                          \
+        ((double)time_function_total_time_taken) / ((double)n_repeats) /       \
+        ((double)CLOCKS_PER_SEC);                                              \
+    printf("Mean time to execute: %f\n", time_function_time_taken);            \
+  } while (0)
 
 // read the complete file to a string
 const char *read_file(const char *fname);

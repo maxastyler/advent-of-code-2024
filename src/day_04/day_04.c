@@ -107,12 +107,17 @@ uint64_t part_2(struct grid *g) {
   return total;
 }
 
-int main(void) {
+void run() {
   const char *input = read_file("src/day_04/input");
   struct grid g = char_grid_from_input_string(input);
   free(input);
   printf("Part 1: %lu\n", part_1(&g));
   printf("Part 2: %lu\n", part_2(&g));
   grid_free(&g);
+}
+
+int main(void) {
+  TIME_FUNCTION_EXECUTION(run, 100);
+
   return 0;
 }
