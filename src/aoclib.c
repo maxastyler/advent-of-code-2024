@@ -128,3 +128,32 @@ void reg_iter_free(struct reg_iter *r) {
   regfree(&r->compiled);
   free(r->matches);
 }
+
+struct grid {
+  uint64_t rows;
+  uint64_t cols;
+  uint64_t stride;
+  char *data;
+};
+
+struct grid grid_new(uint64_t rows, uint64_t cols, uint64_t stride) {
+  char *data = malloc(rows * cols * stride);
+  assert(data != NULL);
+  return (struct grid){
+      .rows = rows,
+      .cols = cols,
+      .stride = stride,
+      .data = data,
+  };
+}
+
+void *grid_elem(const struct grid *g, uint64_t row, uint64_t col) {
+  if ((row <= g->rows) & (col <= g->cols)) {
+    uint64_t index = ((row * g->cols) + col) * g->stride;
+    return (g->data + index);
+  } else {
+    return NULL;
+  }
+}
+
+void grid_free(const struct grid *g) { free(g->data); }

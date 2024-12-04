@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stdbool.h"
 #include "regex.h"
+#include "stdbool.h"
 #include "stdint.h"
 
 // read the complete file to a string
@@ -38,7 +38,19 @@ struct reg_iter reg_iter_new(const char *pattern, const char *to_match,
   or a posix regex error  on error (no more matches, regex error...)*/
 int32_t reg_iter_next_match(struct reg_iter *r);
 
-const char *reg_iter_string_for_match(struct reg_iter *r,
-                                      uint64_t match_index);
+const char *reg_iter_string_for_match(struct reg_iter *r, uint64_t match_index);
 
 void reg_iter_free(struct reg_iter *r);
+
+struct grid {
+  uint64_t rows;
+  uint64_t cols;
+  uint64_t stride;
+  char *data;
+};
+
+struct grid grid_new(uint64_t rows, uint64_t cols, uint64_t stride);
+
+void *grid_elem(const struct grid *g, uint64_t row, uint64_t col);
+
+void grid_free(const struct grid *g);
