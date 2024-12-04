@@ -148,7 +148,7 @@ struct grid grid_new(uint64_t rows, uint64_t cols, uint64_t stride) {
 }
 
 void *grid_elem(const struct grid *g, uint64_t row, uint64_t col) {
-  if ((row <= g->rows) & (col <= g->cols)) {
+  if ((row < g->rows) & (col < g->cols)) {
     uint64_t index = ((row * g->cols) + col) * g->stride;
     return (g->data + index);
   } else {
