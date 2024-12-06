@@ -24,21 +24,26 @@ const char *read_file(const char *fname) {
 }
 
 struct spliterator {
-  const char delim;
+  const char *delim;
+  uint64_t delim_len;
   char *position;
   char *buffer;
+  const char *buffer_end;
   bool finished;
 };
 
-struct spliterator spliterator_new(const char *str, const char delim) {
+struct spliterator spliterator_new(const char *str, const char *delim) {
   size_t buf_len = strlen(str) + 1;
+  uint64_t delim_len = strlen(delim);
   char *buffer = malloc(buf_len);
   assert(buffer != NULL);
-  memcpy(buffer, str, buf_len);
+  strcpy(buffer, str);
   struct spliterator s = {
+      .delim_len = delim_len,
       .delim = delim,
       .position = buffer,
       .buffer = buffer,
+      .buffer_end = buffer + buf_len,
       .finished = false,
   };
   return s;
@@ -48,13 +53,18 @@ const char *spliterator_next(struct spliterator *s) {
   if (s->finished) {
     return NULL;
   }
+
   char *p = s->position;
-  while (*p == s->delim) {
+  while (strncmp(p, s->delim, s->delim_len) == 0) {
     *p = '\0';
-    p++;
+    p += s->delim_len;
+    if (p >= s->buffer_end) {
+      s->finished = true;
+      return NULL;
+    }
   }
   char *start_of_split = p;
-  while (*p != s->delim) {
+  while (strncmp(p, s->delim, s->delim_len) != 0) {
     if (*p == '\0') {
       s->finished = true;
       if (p == start_of_split) {
@@ -64,9 +74,13 @@ const char *spliterator_next(struct spliterator *s) {
       }
     }
     p++;
+    if (p >= s->buffer_end) {
+      s->finished = true;
+      return NULL;
+    }
   }
   *p = '\0';
-  s->position = p + 1;
+  s->position = p + s->delim_len;
   return start_of_split;
 }
 

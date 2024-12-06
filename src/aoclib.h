@@ -23,13 +23,15 @@
 const char *read_file(const char *fname);
 
 struct spliterator {
-  const char delim;
+  const char *delim;
+  uint64_t delim_len;
   char *position;
   char *buffer;
+  const char *buffer_end;
   bool finished;
 };
 
-struct spliterator spliterator_new(const char *str, const char delim);
+struct spliterator spliterator_new(const char *str, const char *delim);
 
 const char *spliterator_next(struct spliterator *s);
 

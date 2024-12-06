@@ -23,7 +23,7 @@ enum direction check_direction(uint64_t current, uint64_t prev) {
 
 bool line_is_good(const char *line, uint64_t skip_index) {
   bool ret_val = true;
-  struct spliterator splits = spliterator_new(line, ' ');
+  struct spliterator splits = spliterator_new(line, " ");
   const char *n = NULL;
   enum direction dir = NONE;
   uint64_t current;
@@ -72,7 +72,7 @@ bool line_is_good_p2(const char *line) {
 }
 
 uint64_t part_1(const char *input) {
-  struct spliterator lines = spliterator_new(input, '\n');
+  struct spliterator lines = spliterator_new(input, "\n");
   const char *line = NULL;
   char *n = NULL;
   uint64_t total = 0;
@@ -86,7 +86,7 @@ uint64_t part_1(const char *input) {
 }
 
 uint64_t part_2(const char *input) {
-  struct spliterator lines = spliterator_new(input, '\n');
+  struct spliterator lines = spliterator_new(input, "\n");
   const char *line = NULL;
   char *n = NULL;
   uint64_t total = 0;
