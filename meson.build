@@ -14,3 +14,4 @@ test('vector tests', executable('vector_tests', 'src/vector.c', 'src/vector_test
 test('hashmap tests', executable('hashmap_tests', 'src/hashmap.c', 'src/hashmap_test.c'))
 test('aoclib tests', executable('aoclib_tests', 'src/aoclib_test.c', 'src/aoclib.c'))
 test('gen_hashmap tests', executable('gen_hashmap_tests', 'src/gen_hashmap_test.c', 'src/gen_hashmap.c'))
+test('gen_vector tests', executable('gen_vector_tests', 'src/gen_vector_test.c', 'src/gen_vector.c'))

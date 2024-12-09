@@ -1,5 +1,5 @@
 #include "../aoclib.h"
-#include "../hashmap.h"
+#include "../gen_hashmap.h"
 #include "../vector.h"
 #include "stdint.h"
 
@@ -9,9 +9,6 @@ bool ikey_eq(const void *k1, const void *k2) {
 
 void value_dropper(void *v) { vector_free((struct vector *)v); }
 
-struct hashmap_key_bytes to_bytes(void *value size_t key_stride) {
-  
-}
 
 struct hashmap parse_rules(const char *rules) {
   struct spliterator s = spliterator_new(rules, "\n");
