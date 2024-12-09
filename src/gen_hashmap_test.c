@@ -1,7 +1,7 @@
 #include "gen_hashmap.h"
 #include "stdint.h"
 
-GEN_HASHMAP_IMPL(int_hashmap, uint64_t, uint64_t)
+GEN_HASHMAP_DEFAULT_IMPL(int_hashmap, uint64_t, uint64_t);
 
 void map_int(uint64_t *k, uint64_t *v, void *state) { *(uint64_t *)state += 1; }
 

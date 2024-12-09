@@ -1,14 +1,20 @@
 #include "assert.h"
 #include "stdbool.h"
+#include "stdint.h"
 #include "stdlib.h"
 
 enum hashmap_occupancy { hashmap_empty, hashmap_filled, hashmap_tombstone };
+
+#define FNV_START 0xcbf29ce484222325
 
 #define INITIAL_HASHMAP_SIZE_EXP 3
 
 #define OCCUPANCY_THRESHOLD 0.7
 
-#define GEN_HASHMAP_IMPL(hashmap_name, key_type, value_type)                   \
+int64_t fnv_hash(int64_t hash, const char *bytes, uint64_t bytes_len);
+
+#define GEN_HASHMAP_IMPL(hashmap_name, key_type, value_type, equality_expr,    \
+                         hash_expr)                                            \
   struct hashmap_name##_entry {                                                \
     enum hashmap_occupancy occupancy;                                          \
     key_type key;                                                              \
@@ -49,22 +55,18 @@ enum hashmap_occupancy { hashmap_empty, hashmap_filled, hashmap_tombstone };
                                                                                \
   void hashmap_name##_free(struct hashmap_name *h) { free(h->entries); }       \
                                                                                \
-  int64_t hashmap_name##_hash_key(key_type key) {                              \
-    const char *key_ptr = (const char *)&key;                                  \
-    int64_t hash = 0xcbf29ce484222325;                                         \
-    const int64_t fnv_prime = 0x100000001b3;                                   \
-    for (size_t i = 0; i < sizeof(key_type); i++) {                            \
-      hash = (hash ^ key_ptr[i]) * fnv_prime;                                  \
-    }                                                                          \
-    return hash;                                                               \
+  bool hashmap_name##_keys_equal(const key_type *a, const key_type *b) {       \
+    return equality_expr;                                                      \
   }                                                                            \
                                                                                \
+  int64_t hashmap_name##_hash_key(const key_type *key) { return hash_expr; }   \
+                                                                               \
   uint64_t hashmap_name##_find_index(struct hashmap_name *h, key_type key) {   \
-    uint64_t base_index = hashmap_name##_hash_key(key) & (h->capacity - 1);    \
+    uint64_t base_index = hashmap_name##_hash_key(&key) & (h->capacity - 1);   \
     uint64_t index = base_index;                                               \
     do {                                                                       \
       if (h->entries[index].occupancy == hashmap_filled) {                     \
-        if (key == h->entries[index].key) {                                    \
+        if (hashmap_name##_keys_equal(&key, &h->entries[index].key)) {         \
           return index;                                                        \
         }                                                                      \
       } else {                                                                 \
@@ -148,3 +150,7 @@ enum hashmap_occupancy { hashmap_empty, hashmap_filled, hashmap_tombstone };
       }                                                                        \
     }                                                                          \
   }
+
+#define GEN_HASHMAP_DEFAULT_IMPL(hashmap_name, key_type, value_type)           \
+  GEN_HASHMAP_IMPL(hashmap_name, key_type, value_type, *a == *b,               \
+                   fnv_hash(FNV_START, (const char *)key, sizeof(key_type)))

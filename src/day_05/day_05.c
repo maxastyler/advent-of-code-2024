@@ -5,9 +5,9 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-GEN_HASHMAP_IMPL(rules_set, uint32_t, bool);
+GEN_HASHMAP_DEFAULT_IMPL(rules_set, uint32_t, bool);
 
-GEN_HASHMAP_IMPL(rules_map, uint32_t, struct rules_set);
+GEN_HASHMAP_DEFAULT_IMPL(rules_map, uint32_t, struct rules_set);
 
 GEN_VECTOR_IMPL(pages, uint32_t);
 GEN_VECTOR_IMPL(books, struct pages);
