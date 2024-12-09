@@ -12,6 +12,14 @@ int main(void) {
   assert(*int_hashmap_get(&x, 2) == 3);
   assert(int_hashmap_delete(&x, 2));
   assert(!int_hashmap_delete(&x, 2));
+  assert(x.length == 0);
   assert(int_hashmap_get(&x, 2) == NULL);
+  for (int i = 0; i < 100; i++) {
+    int_hashmap_insert(&x, i, i);
+    assert(x.length == i + 1);
+  }
+  assert(int_hashmap_delete(&x, 0));
+  assert(x.length == 99);
+
   return 0;
 }

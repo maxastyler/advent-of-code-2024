@@ -95,18 +95,21 @@ enum hashmap_occupancy { hashmap_empty, hashmap_filled, hashmap_tombstone };
     uint64_t old_capacity = h->capacity;                                       \
     h->capacity_index++;                                                       \
     h->capacity = 1 << h->capacity_index;                                      \
+    struct hashmap_name##_entry *old_entries = h->entries;                     \
     struct hashmap_name##_entry *new_entries =                                 \
         hashmap_name##_generate_entries(h->capacity);                          \
     assert(new_entries != NULL);                                               \
+    h->entries = new_entries;                                                  \
+    h->length = 0;                                                             \
+    h->n_occupations = 0;                                                      \
     for (uint64_t i = 0; i < old_capacity; i++) {                              \
-      if (h->entries[i].occupancy == hashmap_filled) {                         \
-        key_type key = h->entries[i].key;                                      \
-        value_type value = h->entries[i].value;                                \
+      if (old_entries[i].occupancy == hashmap_filled) {                        \
+        key_type key = old_entries[i].key;                                     \
+        value_type value = old_entries[i].value;                               \
         hashmap_name##_insert_unchecked(h, key, value);                        \
       }                                                                        \
     }                                                                          \
-    free(h->entries);                                                          \
-    h->entries = new_entries;                                                  \
+    free(old_entries);                                                         \
   }                                                                            \
                                                                                \
   void hashmap_name##_insert(struct hashmap_name *h, key_type key,             \
