@@ -51,8 +51,10 @@
     }                                                                          \
   }                                                                            \
                                                                                \
-  void vector_name##_map(struct vector_name *v, void (*mapper)(elem_type *)) { \
+  void vector_name##_map(struct vector_name *v,                                \
+                         void (*mapper)(elem_type *, void *),                  \
+                         void *map_state) {                                    \
     for (uint64_t i = 0; i < v->length; i++) {                                 \
-      mapper(&v->buffer[i]);                                                   \
+      mapper(&v->buffer[i], map_state);                                        \
     }                                                                          \
   }
