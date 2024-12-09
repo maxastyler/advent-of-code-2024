@@ -1,5 +1,7 @@
 #include "assert.h"
+#include "stdbool.h"
 #include "stdint.h"
+#include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
 
@@ -35,6 +37,7 @@
     elem_type *new_buffer =                                                    \
         realloc(v->buffer, v->capacity * sizeof(elem_type));                   \
     assert(new_buffer != NULL);                                                \
+    v->buffer = new_buffer;                                                    \
   }                                                                            \
                                                                                \
   void vector_name##_push(struct vector_name *v, elem_type elem) {             \
@@ -57,4 +60,6 @@
     for (uint64_t i = 0; i < v->length; i++) {                                 \
       mapper(&v->buffer[i], map_state);                                        \
     }                                                                          \
-  }
+  }                                                                            \
+                                                                               \
+  void vector_name##_clear(struct vector_name *v) { v->length = 0; }
