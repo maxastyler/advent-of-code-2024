@@ -137,4 +137,14 @@ enum hashmap_occupancy { hashmap_empty, hashmap_filled, hashmap_tombstone };
     } else {                                                                   \
       return false;                                                            \
     }                                                                          \
+  }                                                                            \
+                                                                               \
+  void hashmap_name##_map(struct hashmap_name *h,                              \
+                          void (*mapper)(key_type *, value_type *, void *),    \
+                          void *map_state) {                                   \
+    for (uint64_t i = 0; i < h->capacity; i++) {                               \
+      if (h->entries[i].occupancy == hashmap_filled) {                         \
+        mapper(&h->entries[i].key, &h->entries[i].value, map_state);           \
+      }                                                                        \
+    }                                                                          \
   }

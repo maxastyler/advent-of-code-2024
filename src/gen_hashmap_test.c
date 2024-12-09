@@ -3,6 +3,8 @@
 
 GEN_HASHMAP_IMPL(int_hashmap, uint64_t, uint64_t)
 
+void map_int(uint64_t *k, uint64_t *v, void *state) { *(uint64_t *)state += 1; }
+
 int main(void) {
   struct int_hashmap x = int_hashmap_new();
   int_hashmap_free(&x);
@@ -20,6 +22,8 @@ int main(void) {
   }
   assert(int_hashmap_delete(&x, 0));
   assert(x.length == 99);
-
+  uint64_t n = 0;
+  int_hashmap_map(&x, map_int, &n);
+  assert(n == 99);
   return 0;
 }
