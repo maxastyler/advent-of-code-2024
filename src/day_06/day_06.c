@@ -12,7 +12,7 @@ struct coord {
 
 struct tile {
   bool obstacle;
-  bool visited;
+  uint8_t visited;
 };
 
 GEN_HASHMAP_IMPL(hgrid, struct coord, struct tile,
@@ -20,6 +20,16 @@ GEN_HASHMAP_IMPL(hgrid, struct coord, struct tile,
                  fnv_hash(fnv_hash(FNV_START, (const char *)&key->row,
                                    sizeof(int64_t)),
                           (const char *)&key->col, sizeof(int64_t)));
+
+void hgrid_clone_into(struct hgrid *to, const struct hgrid *other) {
+  uint64_t len = other->capacity * sizeof(struct hgrid_entry);
+  struct hgrid_entry *new_entries =
+      malloc(other->capacity * sizeof(struct hgrid_entry));
+  assert(new_entries != NULL);
+  memcpy(new_entries, other->entries, len);
+  memcpy(to, other, sizeof(struct hgrid));
+  to->entries = new_entries;
+}
 
 struct state {
   uint8_t dir;
