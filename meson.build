@@ -6,7 +6,8 @@ days = [['day_01', 'src/day_01/day_01.c', 'src/vector.c', 'src/hashmap.c'],
 	['day_04', 'src/day_04/day_04.c', 'src/aoclib.c'],
 	['day_05', 'src/day_05/day_05.c', 'src/aoclib.c', 'src/gen_hashmap.c'],
 	['day_06', 'src/day_06/day_06.c', 'src/aoclib.c', 'src/gen_hashmap.c'],
-	['day_07', 'src/day_07/day_07.c', 'src/aoclib.c', ],]
+	['day_07', 'src/day_07/day_07.c', 'src/aoclib.c', ],
+	['day_08', 'src/day_08/day_08.c', 'src/aoclib.c', 'src/gen_hashmap.c'],]
 
 foreach day : days
 	executable(day)
