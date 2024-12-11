@@ -16,6 +16,11 @@
     uint64_t length;                                                           \
   };                                                                           \
                                                                                \
+  struct vector_name##_slice {                                                 \
+    elem_type *buffer;                                                         \
+    uint64_t length;                                                           \
+  };                                                                           \
+                                                                               \
   struct vector_name vector_name##_new() {                                     \
     uint64_t capacity = INITIAL_VECTOR_SIZE;                                   \
     elem_type *buffer = malloc(sizeof(elem_type) * capacity);                  \
@@ -64,4 +69,19 @@
     }                                                                          \
   }                                                                            \
                                                                                \
-  void vector_name##_clear(struct vector_name *v) { v->length = 0; }
+  void vector_name##_clear(struct vector_name *v) { v->length = 0; }           \
+                                                                               \
+  void vector_name##_clone_into(struct vector_name *to,                        \
+                                const struct vector_name *from) {              \
+    elem_type *buffer = malloc(from->length * sizeof(elem_type));              \
+    assert(buffer != NULL);                                                    \
+    memcpy(buffer, from->buffer, from->length * sizeof(elem_type));            \
+    memcpy(to, from, sizeof(struct vector_name));                              \
+  }                                                                            \
+                                                                               \
+  struct vector_name##_slice vector_name##_get_slice(                          \
+      struct vector_name *v, uint64_t from, uint64_t to) {                     \
+    uint64_t length = to - from;                                               \
+    return (struct vector_name##_slice){.buffer = v->buffer + from,            \
+                                        .length = length};                     \
+  }\
